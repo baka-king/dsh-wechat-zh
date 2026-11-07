@@ -40,6 +40,8 @@ cd dsh-wechat-zh
 powershell -ExecutionPolicy Bypass -File .\apply-patch.ps1
 ```
 
+没有 git 的话，点右上角 **Code → Download ZIP**，解压后在那个文件夹里开 PowerShell，跑同一条命令。
+
 看到 `已打补丁` 后，**重启 DSH**，微信里发「菜单」试试。
 
 ### 回滚
