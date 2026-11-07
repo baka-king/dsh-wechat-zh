@@ -1,0 +1,28 @@
+--- a/dist/core/lib/router.js
++++ b/dist/core/lib/router.js
+@@ -763,6 +763,13 @@
+  */
+ export function splitCommand(text) {
+     const trimmed = text.trim();
++    // Alias added locally: 「菜单」/「菜单 all」 mean /list. A phone keyboard makes a leading
++    // slash and the word "list" awkward, and the listing is the thing people ask for most.
++    if (trimmed === '菜单')
++        return { command: '/list', args: '' };
++    if (trimmed.startsWith('菜单 ') || trimmed.startsWith('菜单:') || trimmed.startsWith('菜单：')) {
++        return { command: '/list', args: trimmed.slice(2).replace(/^[:\s：]+/, '').trim() };
++    }
+     const lower = trimmed.toLowerCase();
+     const space = trimmed.search(/\s/);
+     if (space >= 0) {
+@@ -1504,7 +1511,10 @@
+     // knows nothing about is better described by its title than by an epoch it never had.
+     const at = session.updatedAt;
+     const when = at === undefined || !Number.isFinite(at) || at <= 0 ? '' : ` · ${relativeTime(at, now)}`;
+-    return `${String(index + 1)}. ${title}${when}${mark}  ${shortId(session.sessionId)}`;
++    // Locally the trailing short id was dropped at the user's request: the row now carries the
++    // number, the title and the age only. `/switch <short id>` still resolves — the id is simply
++    // no longer printed.
++    return `${String(index + 1)}. ${title}${when}${mark}`;
+ }
+ /**
+  * Trim a conversation title for one row.
